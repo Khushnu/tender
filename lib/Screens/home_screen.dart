@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:swipe_cards/swipe_cards.dart';
-import 'package:tender/Functions/alert_function.dart';
 import 'package:tender/Model/datamodel.dart';
 import 'package:tender/Screens/history_screen.dart';
 import 'package:tender/Widgets/bottom_buttons.dart';
+import 'package:tender/Widgets/card_wiget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,170 +12,191 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
- List<SwipeItem> _swipeItems = []; 
- MatchEngine? matchEngine;
- List<DataModel> reqs = [];
+  List<DataModel> reqs = [];
   var dataa;
-
-@override
-  void initState() {
-    
-    for(int i =0; i<data.length; i++){
-      _swipeItems.add(SwipeItem(
-        content: DataModel(
-          name: data[i].name, 
-        age: data[i].age, 
-        distance: data[i].distance, 
-        image: data[i].image)
-      , likeAction: (){
-       actions(context, data[i].name, 'like');
-       reqs.add(data[i],);
-      }, 
-      nopeAction: (){
-        actions(context, data[i].name, 'rejected');
-      }), 
-      );
-    }
-    matchEngine = MatchEngine(swipeItems: _swipeItems);
-    super.initState();
-  
-  }
-
-
-
+  var offset = Offset.zero;
+  var angel = 0.0;
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.sizeOf(context).height;
-    double screenWidth =  MediaQuery.sizeOf(context).width;
+    double screenWidth = MediaQuery.sizeOf(context).width;
     return Scaffold(
-     
       body: Container(
-        height: screenHeight , 
+        height: screenHeight,
         width: screenWidth,
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter, 
-            end: Alignment.bottomCenter,
-            colors: [
-            Color(0xffFF655B), 
-            Color(0xffFF5864), 
-            Color(0xffFD297B)
-          ])
-        ),
+            gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+              Color(0xffFF655B),
+              Color(0xffFF5864),
+              Color(0xffFD297B)
+            ])),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-             Padding(
-               padding: const EdgeInsets.only(top: 60, left: 10 ),
-               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                 children: [
-                   const Text('Discover', style: TextStyle(
-                      color: Colors.white70, 
-                      fontSize: 30, 
-                      fontWeight: FontWeight.bold),),
-                      IconButton(onPressed: (){}, icon: const Icon(Icons.menu, color: Colors.white70,))
-                 ],
-               ),
-             ),
-            SizedBox(
-              height: screenHeight * 0.7 + 50, 
-              child: SwipeCards(
-                matchEngine: matchEngine!, 
-                leftSwipeAllowed: true, 
-                rightSwipeAllowed: true, 
-                upSwipeAllowed: false, 
-              itemBuilder: (_ , index){
-             dataa = data[index];
-               return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 50),
-                      child: Container(
-                        // height: 90, 
-                        // width: 150,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20)
-                        ),
-                        child: Stack(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child:   Image.network(dataa.image, fit: BoxFit.fill, height: screenHeight * 0.8 , width: screenWidth ,
-                              frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-                                return child;
-                              },
-                              loadingBuilder: (context, child, loadingProgress) {
-                                if(loadingProgress == null){
-                                  return child;
-                                } else {
-                                return  const Center(
-                                    child: CircularProgressIndicator.adaptive(
-                                     backgroundColor: Colors.black,
-                                    ),
-                                  );
-                                }
-                              },)), 
-                              
-                               Align(
-                                  alignment: Alignment.bottomLeft,
-                                   child: Opacity(
-                                    opacity: 0.9,
-                                     child: Container(
-                                      height: 90, 
-                                      width: screenWidth  ,
-                                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 3),
-                                      decoration: const BoxDecoration(
-                                        gradient: LinearGradient(
-                                          begin: Alignment.topCenter, 
-                                          end: Alignment.bottomCenter,
-                                          colors: [
-                                          Colors.transparent, 
-                                          Colors.black
-                                        ]
-                                        ), 
-                                        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20))
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(dataa.name, 
-                                     style: const TextStyle(
-                                      color: Colors.white, 
-                                      fontSize: 20, 
-                                      fontWeight: FontWeight.bold),), 
-                                      Text("Age ${dataa.age}", 
-                                     style: const TextStyle(
-                                      color: Colors.white, 
-                                      fontSize: 18, 
-                                      fontWeight: FontWeight.normal),), 
-                                      Text(dataa.distance, 
-                                     style: const TextStyle(
-                                      color: Colors.white, 
-                                      fontSize: 18, 
-                                      fontWeight: FontWeight.normal),)
-                                        ],
-                                      ),
-                                     ),
-                                   ) ),
-                          ],
-                        ),
-                      ),
-                    );
-              }, onStackFinished: (){
-                return ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('List is Over')));
-              },)  ),
             Padding(
-              padding: const EdgeInsets.symmetric( horizontal: 20),
+              padding: const EdgeInsets.only(top: 60, left: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  BottomButtonsWidget(icon: Icons.close, onTap: (){},), 
-                  BottomButtonsWidget(icon: Icons.favorite,onTap: (){
-                    Navigator.of(context).push(MaterialPageRoute(builder: (_){
-                      return HistoryScreen(req: reqs);
-                    }));
-                  },)
-                 
+                  const Text(
+                    'Discover',
+                    style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.menu,
+                        color: Colors.white70,
+                      ))
+                ],
+              ),
+            ),
+            SizedBox(
+                height: screenHeight * 0.7 + 50,
+                child: Stack(
+                  children: data.map((e) {
+                    var dat = e;
+                    return data.isEmpty
+                                  ? CardWidget(
+                                      name: dat.name,
+                                      age: dat.age,
+                                      distance: dat.distance,
+                                      image: dat.image) : Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GestureDetector(
+                        onHorizontalDragStart: (details) {},
+                        onHorizontalDragEnd: (a) {
+                          setState(() {
+                            angel = 0;
+                          });
+                        },
+                        onHorizontalDragUpdate: (a) {
+                          setState(() {
+                            angel += a.primaryDelta ?? 0;
+                          });
+                          // ignore: avoid_print
+                          print(angel / 8);
+                          if (angel / 8 > 25) {
+                            data.removeLast();
+                            setState(() {
+                               reqs.add(dat);
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    Future.delayed(const Duration(seconds: 1), () {
+                                      Navigator.of(context).pop(true);
+                                    });
+                                    return AlertDialog(
+                                      insetPadding: const EdgeInsets.symmetric(
+                                          horizontal: 60, vertical: 310),
+                                      content: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'You Like ${dat.name}',
+                                            style: const TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18),
+                                          ),
+                                          Container(
+                                              height: 40,
+                                              width: 40,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                border: Border.all(
+                                                    color: Colors.green),
+                                              ),
+                                              child: const Icon(Icons.favorite))
+                                        ],
+                                      ),
+                                    );
+                                  });
+                              angel = 0;
+                            });
+                          } else if (angel / 8 < -25) {
+                            setState(() {
+                             
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    Future.delayed(const Duration(seconds: 1), () {
+                                      Navigator.of(context).pop(true);
+                                    });
+                                    return AlertDialog(
+                                      insetPadding: const EdgeInsets.symmetric(
+                                          horizontal: 60, vertical: 310),
+                                      content: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'You Reject ${dat.name}',
+                                            style: const TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18),
+                                          ),
+                                          Container(
+                                              height: 40,
+                                              width: 40,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                border: Border.all(
+                                                    color: Colors.red),
+                                              ),
+                                              child: const Icon(Icons.close))
+                                        ],
+                                      ),
+                                    );
+                                  });
+                              data.removeLast();
+                              angel = 0;
+                            });
+                            // ignore: avoid_print
+                            print('left');
+                          }
+                        },
+                        child: Transform.translate(
+                          offset: Offset(angel / 1.5, 0),
+                          child: Transform.rotate(
+                              angle: angel / 10 * 0.0174533,
+                              child: 
+                                   CardWidget(
+                                      name: dat.name,
+                                      age: dat.age,
+                                      distance: dat.distance,
+                                      image: dat.image)),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                )),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  BottomButtonsWidget(
+                    icon: Icons.close,
+                    onTap: () {},
+                  ),
+                  BottomButtonsWidget(
+                    icon: Icons.favorite,
+                    onTap: () {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (_) {
+                        return HistoryScreen(req: reqs);
+                      }));
+                    },
+                  )
                 ],
               ),
             )

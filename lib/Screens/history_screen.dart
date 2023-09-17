@@ -39,7 +39,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       });
                       ScaffoldMessenger.of(context).showSnackBar( SnackBar(
                         backgroundColor: Color.fromARGB(137, 244, 171, 82),
-                        content: Text('${data.name} Friend Request Cancel '), 
+                        content: Text('${data.name} Friend Request Cancel'), 
                         duration: const Duration(seconds: 2),));
                     },
                     child: Container(
